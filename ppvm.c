@@ -33,7 +33,7 @@
 
 void usage(bool explicit)
 {
-    fprintf(stderr, "Usage: ppvm [-v] <command> [argument...]\n");
+    fprintf(stderr, "Usage: ppvm [-pv] <command> [argument...]\n");
     if (!explicit)
         exit(1);
     fprintf(stderr, "\n"
