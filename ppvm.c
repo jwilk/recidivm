@@ -47,6 +47,21 @@ void usage(bool explicit)
     exit(0);
 }
 
+void flush_stdout(void)
+{
+    int rc;
+    if (ferror(stdout)) {
+        fclose(stdout);
+        rc = EOF;
+        errno = EIO;
+    } else
+        rc = fclose(stdout);
+    if (rc == EOF) {
+        perror("ppvm: /dev/stdout");
+        exit(1);
+    }
+}
+
 void fatal_child(void)
 {
     /* Something went very, very wrong. */
@@ -214,6 +229,7 @@ int main(int argc, char **argv)
         }
     }
     printf("%ju\n", (uintmax_t) l);
+    flush_stdout();
     return 0;
 }
 
