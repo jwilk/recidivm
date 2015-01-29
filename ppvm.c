@@ -135,10 +135,25 @@ int main(int argc, char **argv)
     }
     if (opt_capture_stdin) {
         char buffer[BUFSIZ];
-        char path[] = "/tmp/ppvm.XXXXXX";
-        infd = mkstemp(path);
+        const char *tmptemplate = "ppvm.XXXXXX";
+        const char *tmpdir = getenv("TMPDIR");
+        char *tmppath;
+        if (tmpdir == NULL)
+            tmpdir = "/tmp";
+        tmppath = malloc(
+            strlen(tmpdir) +
+            1 + /* slash */
+            strlen(tmptemplate) +
+            1 /* null byte */
+        );
+        if (tmppath == NULL) {
+            perror("ppvm: malloc");
+            return 1;
+        }
+        sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
+        infd = mkstemp(tmppath);
         if (infd == -1) {
-            perror("ppvm: mkstemp");
+            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
             return 1;
         }
         ssize_t i;
@@ -149,17 +164,17 @@ int main(int argc, char **argv)
             }
             ssize_t j = write(infd, buffer, i);
             if (j == -1) {
-                fprintf(stderr, "ppvm: %s: %s\n", path, strerror(errno));
+                fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
                 return 1;
             } else if (i != j) {
                 assert(j < i);
-                fprintf(stderr, "ppvm: %s: short write\n", path);
+                fprintf(stderr, "ppvm: %s: short write\n", tmppath);
                 return 1;
             }
         }
-        int rc = unlink(path);
+        int rc = unlink(tmppath);
         if (rc == -1) {
-            fprintf(stderr, "ppvm: %s: %s\n", path, strerror(errno));
+            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
             return 1;
         }
     } else
