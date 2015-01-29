@@ -43,6 +43,21 @@ void usage(bool explicit)
     exit(0);
 }
 
+int child(char **argv, rlim_t m)
+{
+    struct rlimit limit = {m, m};
+    int rc = setrlimit(RLIMIT_AS, &limit);
+    if (rc) {
+        /* Something went very, very wrong. */
+        perror("ppvm: setrlimit");
+        kill(getppid(), SIGABRT);
+        return 1;
+    }
+    execvp(argv[0], argv);
+    perror("ppvm: execvp");
+    return 1;
+}
+
 int main(int argc, char **argv)
 {
     int rc;
@@ -91,17 +106,7 @@ int main(int argc, char **argv)
             return 1;
         case 0:
             /* child */
-            limit.rlim_cur = limit.rlim_max = m;
-            rc = setrlimit(RLIMIT_AS, &limit);
-            if (rc) {
-                /* Something went very, very wrong. */
-                perror("ppvm: setrlimit");
-                kill(getppid(), SIGABRT);
-                return 1;
-            }
-            execvp(argv[optind], argv + optind);
-            perror("ppvm: execvp");
-            return 1;
+            return child(argv + optind, m);
         default:
             {
                 /* parent */
