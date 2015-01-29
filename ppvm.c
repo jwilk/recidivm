@@ -20,6 +20,7 @@
  */
 
 #include <assert.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -33,12 +34,13 @@
 
 void usage(bool explicit)
 {
-    fprintf(stderr, "Usage: ppvm [-pv] <command> [argument...]\n");
+    fprintf(stderr, "Usage: ppvm [-cpv] <command> [argument...]\n");
     if (!explicit)
         exit(1);
     fprintf(stderr, "\n"
         "Options:\n"
         "  -h    display this help and exit\n"
+        "  -c    capture stdin; provide fresh copy of it to every child\n"
         "  -p    don't redirect target program stdout and stderr to /dev/null\n"
         "  -v    be verbose\n"
     );
@@ -53,9 +55,14 @@ void fatal_child(void)
     exit(1);
 }
 
-int child(char **argv, rlim_t m, int outfd)
+int child(char **argv, rlim_t m, int infd, int outfd)
 {
     struct rlimit limit = {m, m};
+    if (infd >= 0) {
+        int fd = dup2(infd, STDIN_FILENO);
+        if (fd == -1)
+            fatal_child();
+    }
     if (outfd >= 0) {
         int fd;
         fd = dup2(outfd, STDOUT_FILENO);
@@ -77,15 +84,21 @@ int main(int argc, char **argv)
 {
     int rc;
     bool opt_verbose = false;
+    bool opt_capture_stdin = false;
     bool opt_print = false;
+    int nullfd = -1;
+    int infd = -1;
     int outfd = -1;
     while (1) {
-        int opt = getopt(argc, argv, "hpv");
+        int opt = getopt(argc, argv, "hcpv");
         if (opt == -1)
             break;
         switch (opt) {
         case 'h':
             usage(true);
+        case 'c':
+            opt_capture_stdin = true;
+            break;
         case 'p':
             opt_print = true;
             break;
@@ -100,13 +113,44 @@ int main(int argc, char **argv)
     }
     if (optind >= argc)
         usage(false);
-    if (!opt_print) {
-        outfd = open("/dev/null", O_RDWR);
-        if (outfd == -1) {
-            perror("ppvm: /dev/null");
+    nullfd = open("/dev/null", O_RDWR);
+    if (nullfd == -1) {
+        perror("ppvm: /dev/null");
+        return 1;
+    }
+    if (opt_capture_stdin) {
+        char buffer[BUFSIZ];
+        char path[] = "/tmp/ppvm.XXXXXX";
+        infd = mkstemp(path);
+        if (infd == -1) {
+            perror("ppvm: mkstemp");
             return 1;
         }
-    }
+        ssize_t i;
+        while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
+            if (i == -1) {
+                perror("ppvm: /dev/stdin");
+                return 1;
+            }
+            ssize_t j = write(infd, buffer, i);
+            if (j == -1) {
+                fprintf(stderr, "ppvm: %s: %s\n", path, strerror(errno));
+                return 1;
+            } else if (i != j) {
+                assert(j < i);
+                fprintf(stderr, "ppvm: %s: short write\n", path);
+                return 1;
+            }
+        }
+        int rc = unlink(path);
+        if (rc == -1) {
+            fprintf(stderr, "ppvm: %s: %s\n", path, strerror(errno));
+            return 1;
+        }
+    } else
+        infd = nullfd;
+    if (!opt_print)
+        outfd = nullfd;
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
@@ -127,13 +171,18 @@ int main(int argc, char **argv)
     assert(r > l);
     while (l < r) {
         rlim_t m = l + (r - l) / 2;
+        off_t off = lseek(infd, 0, SEEK_SET);
+        if (off == -1) {
+            perror("ppvm: child's stdin");
+            return 1;
+        }
         switch (fork()) {
         case -1:
             perror("ppvm: fork");
             return 1;
         case 0:
             /* child */
-            return child(argv + optind, m, outfd);
+            return child(argv + optind, m, infd, outfd);
         default:
             {
                 /* parent */
