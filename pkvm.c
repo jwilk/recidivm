@@ -73,6 +73,15 @@ int main(int argc, char **argv)
     }
     rlim_t l = 0;
     rlim_t r = limit.rlim_max;
+#if defined(__i386__) || defined(__x86_64__)
+    /* On x86(-64) size of rlim_t can be 64 bits, even though the address space
+     * is only 48 bits. */
+    if (sizeof (rlim_t) > 6) {
+        rlim_t rmax = (rlim_t)1 << 24 << 24;
+        if (r > rmax)
+            r = rmax;
+    }
+#endif
     assert(r > l);
     while (l < r) {
         rlim_t m = l + (r - l) / 2;
