@@ -63,7 +63,9 @@ int main(int argc, char **argv)
             limit.rlim_cur = limit.rlim_max = m;
             rc = setrlimit(RLIMIT_AS, &limit);
             if (rc) {
+                /* Something went very, very wrong. */
                 perror("pkvm: setrlimit");
+                kill(getppid(), SIGABRT);
                 return 1;
             }
             execvp(argv[1], argv + 1);
