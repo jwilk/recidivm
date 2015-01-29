@@ -30,10 +30,17 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void usage()
+void usage(bool explicit)
 {
     fprintf(stderr, "Usage: pkvm [-v] <command> [argument...]\n");
-    exit(1);
+    if (!explicit)
+        exit(1);
+    fprintf(stderr, "\n"
+        "Options:\n"
+        "  -h    display this help and exit\n"
+        "  -v    be verbose\n"
+    );
+    exit(0);
 }
 
 int main(int argc, char **argv)
@@ -41,21 +48,23 @@ int main(int argc, char **argv)
     int rc;
     bool opt_verbose = false;
     while (1) {
-        int opt = getopt(argc, argv, "v");
+        int opt = getopt(argc, argv, "hv");
         if (opt == -1)
             break;
         switch (opt) {
+        case 'h':
+            usage(true);
         case 'v':
             opt_verbose = true;
             break;
         case '?':
-            usage();
+            usage(false);
         default:
             assert("unexpected getopt(3) return value" == NULL);
         }
     }
     if (optind >= argc)
-        usage();
+        usage(false);
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
