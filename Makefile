@@ -1,4 +1,5 @@
 CFLAGS = -g -O2 -Wall
+CFLAGS += $(shell getconf LFS_CFLAGS)
 
 .PHONY: all
 all: pkvm
