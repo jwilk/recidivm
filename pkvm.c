@@ -26,16 +26,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-static inline rlim_t middle(rlim_t l, rlim_t r)
-{
-    /* Compute (l + r) / 2 without overflow: */
-    return (
-        l / 2 +
-        r / 2 +
-        (l & r & 1)
-    );
-}
-
 int main(int argc, char **argv)
 {
     if (argc <= 1) {
@@ -53,7 +43,7 @@ int main(int argc, char **argv)
     rlim_t r = limit.rlim_max;
     assert(r > l);
     while (l < r) {
-        rlim_t m = middle(l, r);
+        rlim_t m = l + (r - l) / 2;
         switch (fork()) {
         case -1:
             perror("pkvm: fork");
