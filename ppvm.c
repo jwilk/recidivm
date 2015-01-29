@@ -20,6 +20,7 @@
  */
 
 #include <assert.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -38,21 +39,35 @@ void usage(bool explicit)
     fprintf(stderr, "\n"
         "Options:\n"
         "  -h    display this help and exit\n"
+        "  -p    don't redirect target program stdout and stderr to /dev/null\n"
         "  -v    be verbose\n"
     );
     exit(0);
 }
 
-int child(char **argv, rlim_t m)
+void fatal_child(void)
+{
+    /* Something went very, very wrong. */
+    perror("ppvm: setrlimit");
+    kill(getppid(), SIGABRT);
+    exit(1);
+}
+
+int child(char **argv, rlim_t m, int outfd)
 {
     struct rlimit limit = {m, m};
-    int rc = setrlimit(RLIMIT_AS, &limit);
-    if (rc) {
-        /* Something went very, very wrong. */
-        perror("ppvm: setrlimit");
-        kill(getppid(), SIGABRT);
-        return 1;
+    if (outfd >= 0) {
+        int fd;
+        fd = dup2(outfd, STDOUT_FILENO);
+        if (fd == -1)
+            fatal_child();
+        fd = dup2(outfd, STDERR_FILENO);
+        if (fd == -1)
+            fatal_child();
     }
+    int rc = setrlimit(RLIMIT_AS, &limit);
+    if (rc)
+        fatal_child();
     execvp(argv[0], argv);
     perror("ppvm: execvp");
     return 1;
@@ -62,13 +77,18 @@ int main(int argc, char **argv)
 {
     int rc;
     bool opt_verbose = false;
+    bool opt_print = false;
+    int outfd = -1;
     while (1) {
-        int opt = getopt(argc, argv, "hv");
+        int opt = getopt(argc, argv, "hpv");
         if (opt == -1)
             break;
         switch (opt) {
         case 'h':
             usage(true);
+        case 'p':
+            opt_print = true;
+            break;
         case 'v':
             opt_verbose = true;
             break;
@@ -80,6 +100,13 @@ int main(int argc, char **argv)
     }
     if (optind >= argc)
         usage(false);
+    if (!opt_print) {
+        outfd = open("/dev/null", O_RDWR);
+        if (outfd == -1) {
+            perror("ppvm: /dev/null");
+            return 1;
+        }
+    }
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
@@ -106,7 +133,7 @@ int main(int argc, char **argv)
             return 1;
         case 0:
             /* child */
-            return child(argv + optind, m);
+            return child(argv + optind, m, outfd);
         default:
             {
                 /* parent */
