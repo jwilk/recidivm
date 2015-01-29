@@ -203,7 +203,7 @@ int main(int argc, char **argv)
         rlim_t m = l + (r - l) / 2;
         off_t off = lseek(infd, 0, SEEK_SET);
         if (off == -1) {
-            perror("ppvm: child's stdin");
+            perror("ppvm: captured stdin");
             return 1;
         }
         switch (fork()) {
