@@ -20,19 +20,41 @@
  */
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
+void usage()
+{
+    fprintf(stderr, "Usage: pkvm [-v] <command> [argument...]\n");
+    exit(1);
+}
+
 int main(int argc, char **argv)
 {
-    if (argc <= 1) {
-        fprintf(stderr, "Usage: pkvm <command> [argument...]\n");
-        return 1;
-    }
     int rc;
+    bool opt_verbose = false;
+    while (1) {
+        int opt = getopt(argc, argv, "v");
+        if (opt == -1)
+            break;
+        switch (opt) {
+        case 'v':
+            opt_verbose = true;
+            break;
+        case '?':
+            usage();
+        default:
+            assert("unexpected getopt(3) return value" == NULL);
+        }
+    }
+    if (optind >= argc)
+        usage();
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
@@ -58,7 +80,7 @@ int main(int argc, char **argv)
                 kill(getppid(), SIGABRT);
                 return 1;
             }
-            execvp(argv[1], argv + 1);
+            execvp(argv[optind], argv + optind);
             perror("pkvm: execvp");
             return 1;
         default:
@@ -69,6 +91,19 @@ int main(int argc, char **argv)
                 if (pid < 0) {
                     perror("pkvm: wait");
                     return 1;
+                }
+                if (opt_verbose) {
+                    fprintf(stderr, "pkvm: %ju -> ", (uintmax_t) m);
+                    if (status == 0)
+                        fprintf(stderr, "ok");
+                    else if (WIFEXITED(status))
+                        fprintf(stderr, "exit code %d", WEXITSTATUS(status));
+                    else if (WIFSIGNALED(status)) {
+                        int termsig = WTERMSIG(status);
+                        fprintf(stderr, "signal %d (%s)", termsig, strsignal(termsig));
+                    } else
+                        assert("unexpected wait(2) status" == NULL);
+                    fprintf(stderr, "\n");
                 }
                 if (status == 0)
                     r = m;
