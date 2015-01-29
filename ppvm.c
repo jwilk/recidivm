@@ -95,6 +95,54 @@ int child(char **argv, rlim_t m, int infd, int outfd)
     return 1;
 }
 
+int capture_stdin(void)
+{
+    const char *tmptemplate = "ppvm.XXXXXX";
+    const char *tmpdir = getenv("TMPDIR");
+    char *tmppath;
+    if (tmpdir == NULL)
+        tmpdir = "/tmp";
+    tmppath = malloc(
+        strlen(tmpdir) +
+        1 + /* slash */
+        strlen(tmptemplate) +
+        1 /* null byte */
+    );
+    if (tmppath == NULL) {
+        perror("ppvm: malloc()");
+        return 1;
+    }
+    sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
+    int fd = mkstemp(tmppath);
+    if (fd == -1) {
+        fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+        return 1;
+    }
+    char buffer[BUFSIZ];
+    ssize_t i;
+    while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
+        if (i == -1) {
+            perror("ppvm: /dev/stdin");
+            return 1;
+        }
+        ssize_t j = write(fd, buffer, i);
+        if (j == -1) {
+            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+            return 1;
+        } else if (i != j) {
+            assert(j < i);
+            fprintf(stderr, "ppvm: %s: short write\n", tmppath);
+            return 1;
+        }
+    }
+    int rc = unlink(tmppath);
+    if (rc == -1) {
+        fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+        return 1;
+    }
+    return fd;
+}
+
 int main(int argc, char **argv)
 {
     int rc;
@@ -133,52 +181,9 @@ int main(int argc, char **argv)
         perror("ppvm: /dev/null");
         return 1;
     }
-    if (opt_capture_stdin) {
-        char buffer[BUFSIZ];
-        const char *tmptemplate = "ppvm.XXXXXX";
-        const char *tmpdir = getenv("TMPDIR");
-        char *tmppath;
-        if (tmpdir == NULL)
-            tmpdir = "/tmp";
-        tmppath = malloc(
-            strlen(tmpdir) +
-            1 + /* slash */
-            strlen(tmptemplate) +
-            1 /* null byte */
-        );
-        if (tmppath == NULL) {
-            perror("ppvm: malloc()");
-            return 1;
-        }
-        sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
-        infd = mkstemp(tmppath);
-        if (infd == -1) {
-            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-            return 1;
-        }
-        ssize_t i;
-        while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
-            if (i == -1) {
-                perror("ppvm: /dev/stdin");
-                return 1;
-            }
-            ssize_t j = write(infd, buffer, i);
-            if (j == -1) {
-                fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-                return 1;
-            } else if (i != j) {
-                assert(j < i);
-                fprintf(stderr, "ppvm: %s: short write\n", tmppath);
-                return 1;
-            }
-        }
-        int rc = unlink(tmppath);
-        if (rc == -1) {
-            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-            return 1;
-        }
-    } else
-        infd = nullfd;
+    infd = opt_capture_stdin
+        ? capture_stdin()
+        : nullfd;
     if (!opt_print)
         outfd = nullfd;
     struct rlimit limit;
