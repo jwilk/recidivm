@@ -91,7 +91,7 @@ int child(char **argv, rlim_t m, int infd, int outfd)
             fatal_child("dup2");
     }
     execvp(argv[0], argv);
-    perror("ppvm: execvp");
+    perror("ppvm: execvp()");
     return 1;
 }
 
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
             1 /* null byte */
         );
         if (tmppath == NULL) {
-            perror("ppvm: malloc");
+            perror("ppvm: malloc()");
             return 1;
         }
         sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
-        perror("ppvm: getrlimit");
+        perror("ppvm: getrlimit()");
         return 1;
     }
     rlim_t l = 0;
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
         }
         switch (fork()) {
         case -1:
-            perror("ppvm: fork");
+            perror("ppvm: fork()");
             return 1;
         case 0:
             /* child */
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
                 int status;
                 pid_t pid = wait(&status);
                 if (pid < 0) {
-                    perror("ppvm: wait");
+                    perror("ppvm: wait()");
                     return 1;
                 }
                 if (opt_verbose) {
