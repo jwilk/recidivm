@@ -32,7 +32,7 @@
 
 void usage(bool explicit)
 {
-    fprintf(stderr, "Usage: pkvm [-v] <command> [argument...]\n");
+    fprintf(stderr, "Usage: ppvm [-v] <command> [argument...]\n");
     if (!explicit)
         exit(1);
     fprintf(stderr, "\n"
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
-        perror("pkvm: getrlimit");
+        perror("ppvm: getrlimit");
         return 1;
     }
     rlim_t l = 0;
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         rlim_t m = l + (r - l) / 2;
         switch (fork()) {
         case -1:
-            perror("pkvm: fork");
+            perror("ppvm: fork");
             return 1;
         case 0:
             /* child */
@@ -95,12 +95,12 @@ int main(int argc, char **argv)
             rc = setrlimit(RLIMIT_AS, &limit);
             if (rc) {
                 /* Something went very, very wrong. */
-                perror("pkvm: setrlimit");
+                perror("ppvm: setrlimit");
                 kill(getppid(), SIGABRT);
                 return 1;
             }
             execvp(argv[optind], argv + optind);
-            perror("pkvm: execvp");
+            perror("ppvm: execvp");
             return 1;
         default:
             {
@@ -108,11 +108,11 @@ int main(int argc, char **argv)
                 int status;
                 pid_t pid = wait(&status);
                 if (pid < 0) {
-                    perror("pkvm: wait");
+                    perror("ppvm: wait");
                     return 1;
                 }
                 if (opt_verbose) {
-                    fprintf(stderr, "pkvm: %ju -> ", (uintmax_t) m);
+                    fprintf(stderr, "ppvm: %ju -> ", (uintmax_t) m);
                     if (status == 0)
                         fprintf(stderr, "ok");
                     else if (WIFEXITED(status))
