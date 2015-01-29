@@ -62,10 +62,10 @@ void flush_stdout(void)
     }
 }
 
-void fatal_child(void)
+void fatal_child(const char *func)
 {
     /* Something went very, very wrong. */
-    perror("ppvm: setrlimit");
+    fprintf(stderr, "ppvm: %s: %s\n", func, strerror(errno));
     kill(getppid(), SIGABRT);
     exit(1);
 }
@@ -73,23 +73,23 @@ void fatal_child(void)
 int child(char **argv, rlim_t m, int infd, int outfd)
 {
     struct rlimit limit = {m, m};
+    int rc = setrlimit(RLIMIT_AS, &limit);
+    if (rc)
+        fatal_child("setrlimit");
     if (infd >= 0) {
         int fd = dup2(infd, STDIN_FILENO);
         if (fd == -1)
-            fatal_child();
+            fatal_child("dup2");
     }
     if (outfd >= 0) {
         int fd;
         fd = dup2(outfd, STDOUT_FILENO);
         if (fd == -1)
-            fatal_child();
+            fatal_child("dup2");
         fd = dup2(outfd, STDERR_FILENO);
         if (fd == -1)
-            fatal_child();
+            fatal_child("dup2");
     }
-    int rc = setrlimit(RLIMIT_AS, &limit);
-    if (rc)
-        fatal_child();
     execvp(argv[0], argv);
     perror("ppvm: execvp");
     return 1;
