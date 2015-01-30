@@ -113,36 +113,37 @@ int capture_stdin(void)
     );
     if (tmppath == NULL) {
         perror("ppvm: malloc()");
-        return 1;
+        exit(1);
     }
     sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
     int fd = mkstemp(tmppath);
     if (fd == -1) {
         fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-        return 1;
+        exit(1);
     }
     char buffer[BUFSIZ];
     ssize_t i;
     while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
         if (i == -1) {
             perror("ppvm: /dev/stdin");
-            return 1;
+            exit(1);
         }
         ssize_t j = write(fd, buffer, i);
         if (j == -1) {
             fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-            return 1;
+            exit(1);
         } else if (i != j) {
             assert(j < i);
             fprintf(stderr, "ppvm: %s: short write\n", tmppath);
-            return 1;
+            exit(1);
         }
     }
     int rc = unlink(tmppath);
     if (rc == -1) {
         fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
-        return 1;
+        exit(1);
     }
+    free(tmppath);
     return fd;
 }
 
