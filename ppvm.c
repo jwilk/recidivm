@@ -246,6 +246,10 @@ int main(int argc, char **argv)
             perror("ppvm: captured stdin");
             return 1;
         }
+        if (opt_verbose) {
+            fprintf(stderr, "ppvm: %ju -> ", (uintmax_t) m);
+            fflush(stderr);
+        }
         switch (fork()) {
         case -1:
             perror("ppvm: fork()");
@@ -263,7 +267,6 @@ int main(int argc, char **argv)
                     return 1;
                 }
                 if (opt_verbose) {
-                    fprintf(stderr, "ppvm: %ju -> ", (uintmax_t) m);
                     if (status == 0)
                         fprintf(stderr, "ok");
                     else if (WIFEXITED(status))
