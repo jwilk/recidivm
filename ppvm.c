@@ -128,7 +128,7 @@ int capture_stdin(void)
             perror("ppvm: /dev/stdin");
             exit(1);
         }
-        ssize_t j = write(fd, buffer, i);
+        ssize_t j = write(fd, buffer, (size_t) i);
         if (j == -1) {
             fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
             exit(1);
