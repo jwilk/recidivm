@@ -270,7 +270,7 @@ int main(int argc, char **argv)
                     if (status == 0)
                         fprintf(stderr, "ok");
                     else if (WIFEXITED(status))
-                        fprintf(stderr, "exit code %d", WEXITSTATUS(status));
+                        fprintf(stderr, "exit status %d", WEXITSTATUS(status));
                     else if (WIFSIGNALED(status)) {
                         int termsig = WTERMSIG(status);
                         fprintf(stderr, "signal %d (%s)", termsig, strsignal(termsig));
