@@ -147,7 +147,7 @@ int capture_stdin(void)
     return fd;
 }
 
-rlim_t roundto(rlim_t n, int unit)
+rlim_t roundto(rlim_t n, rlim_t unit)
 {
     assert(n > 0);
     assert(unit > 0);
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     bool opt_verbose = false;
     bool opt_capture_stdin = false;
     bool opt_print = false;
-    int opt_unit = 1;
+    rlim_t opt_unit = 1;
     int nullfd = -1;
     int infd = -1;
     int outfd = -1;
