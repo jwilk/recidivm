@@ -66,6 +66,21 @@ Display help and exit.
 
 =back
 
+=head1 EXAMPLE
+
+    $ gcc -m32 hello.c -o hello32
+    $ gcc -m64 hello.c -o hello64
+    $ gcc -m32 -fsanitize=address hello.c -o hello32asan
+    $ gcc -m64 -fsanitize=address hello.c -o hello64asan
+    $ ppvm -u M ./hello32
+    2
+    $ ppvm -u M ./hello64
+    4
+    $ ppvm -u M ./hello32asan
+    538
+    $ ppvm -u M ./hello64asan
+    20971587
+
 =head1 SEE ALSO
 
 L<setrlimit(2)>
