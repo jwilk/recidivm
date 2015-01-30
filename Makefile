@@ -1,4 +1,5 @@
-CFLAGS = -g -O2 -Wall
+CFLAGS ?= -g -O2
+CFLAGS += -Wall
 CFLAGS += $(shell getconf LFS_CFLAGS)
 
 .PHONY: all
