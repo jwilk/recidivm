@@ -1,0 +1,71 @@
+=encoding UTF-8
+
+=head1 NAME
+
+ppvm - estimate peak virtual memory use
+
+=head1 SYNOPSIS
+
+B<ppvm> [B<-c>] [B<-p>] [B<-v>] [B<-u> B<B>|B<K>|B<M>] -- I<command> [I<argument>...]
+
+=head1 DESCRIPTION
+
+B<ppvm> estimates the target program's peak virtual memory use
+by running it multiple times with with different memory limits.
+
+The target program must be well-behaved:
+
+=over 2
+
+=item *
+
+If the memory limit is sufficient, it must terminate with exit status 0.
+
+=item *
+
+If the memory limit is insufficient, it must terminate with non-zero exit status, or be terminated by a signal.
+
+=back
+
+=head1 OPTIONS
+
+=over
+
+=item B<-h>
+
+Display help and exit.
+
+=item B<-c>
+
+Capture stdin and provide fresh copy of it to every instance of the target program.
+
+The default is to redirect stdin to F</dev/null>.
+
+=item B<-p>
+
+Don't redirect the target program's stdout or stderr.
+
+The default is to redirect both stdout and stderr to F</dev/null>.
+
+=item B<-u B>
+
+Use byte as the size unit.
+This is the default.
+
+=item B<-u K>
+
+Use kilobyte (1024 bytes) as the size unit
+
+=item B<-u M>
+
+Use megabyte (1048576 bytes) as the size unit.
+
+=item B<-v>
+
+Print information about every call to the target program.
+
+=back
+
+=head1 SEE ALSO
+
+L<setrlimit(2)>
