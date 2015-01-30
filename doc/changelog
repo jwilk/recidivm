@@ -1,5 +1,5 @@
-ppvm (0.1) UNRELEASED; urgency=low
+ppvm (0.1) unstable; urgency=low
 
   * Initial release.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 30 Jan 2015 12:41:01 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 30 Jan 2015 14:17:29 +0100
