@@ -39,13 +39,13 @@ void usage(bool explicit)
         exit(1);
     fprintf(stderr, "\n"
         "Options:\n"
-        "  -h    display this help and exit\n"
         "  -c    capture stdin\n"
         "  -p    don't redirect stdout and stderr\n"
         "  -u B  use byte as unit (default)\n"
         "  -u K  use kilobyte as unit\n"
         "  -u M  use megabyte as unit\n"
         "  -v    be verbose\n"
+        "  -h    display this help and exit\n"
     );
     exit(0);
 }

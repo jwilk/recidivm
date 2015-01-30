@@ -31,10 +31,6 @@ If the memory limit is insufficient, it must terminate with non-zero exit status
 
 =over
 
-=item B<-h>
-
-Display help and exit.
-
 =item B<-c>
 
 Capture stdin and provide fresh copy of it to every instance of the target program.
@@ -63,6 +59,10 @@ Use megabyte (1048576 bytes) as the size unit.
 =item B<-v>
 
 Print information about every call to the target program.
+
+=item B<-h>
+
+Display help and exit.
 
 =back
 
