@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     bool opt_verbose = false;
     bool opt_capture_stdin = false;
     bool opt_print = false;
-    int opt_unit = -1;
+    int opt_unit = 1;
     int nullfd = -1;
     int infd = -1;
     int outfd = -1;
