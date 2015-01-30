@@ -34,7 +34,7 @@
 
 void usage(bool explicit)
 {
-    fprintf(stderr, "Usage: ppvm [-cpv] -- <command> [argument...]\n");
+    fprintf(stderr, "Usage: ppvm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
     if (!explicit)
         exit(1);
     fprintf(stderr, "\n"
@@ -42,6 +42,9 @@ void usage(bool explicit)
         "  -h    display this help and exit\n"
         "  -c    capture stdin; provide fresh copy of it to every child\n"
         "  -p    don't redirect target program stdout and stderr to /dev/null\n"
+        "  -u B  use byte as unit (default)\n"
+        "  -u K  use kilobyte as unit\n"
+        "  -u M  use megabyte as unit\n"
         "  -v    be verbose\n"
     );
     exit(0);
@@ -143,17 +146,25 @@ int capture_stdin(void)
     return fd;
 }
 
+rlim_t roundto(rlim_t n, int unit)
+{
+    assert(n > 0);
+    assert(unit > 0);
+    return ((n - 1) | (unit - 1)) + 1;
+}
+
 int main(int argc, char **argv)
 {
     int rc;
     bool opt_verbose = false;
     bool opt_capture_stdin = false;
     bool opt_print = false;
+    int opt_unit = -1;
     int nullfd = -1;
     int infd = -1;
     int outfd = -1;
     while (1) {
-        int opt = getopt(argc, argv, "hcpv");
+        int opt = getopt(argc, argv, "hcpu:v");
         if (opt == -1)
             break;
         switch (opt) {
@@ -164,6 +175,29 @@ int main(int argc, char **argv)
             break;
         case 'p':
             opt_print = true;
+            break;
+        case 'u':
+            {
+                char optchar = '?';
+                if (strlen(optarg) == 1)
+                    optchar = optarg[0];
+                opt_unit = 1;
+                switch (optchar)
+                {
+                case 'm':
+                case 'M':
+                    opt_unit *= 1024;
+                case 'k':
+                case 'K':
+                    opt_unit *= 1024;
+                case 'b':
+                case 'B':
+                    break;
+                default:
+                    fprintf(stderr, "ppvm: unit must be B, K or M, not %s\n", optarg);
+                    return 1;
+                }
+            }
             break;
         case 'v':
             opt_verbose = true;
@@ -192,7 +226,7 @@ int main(int argc, char **argv)
         perror("ppvm: getrlimit()");
         return 1;
     }
-    rlim_t l = 0;
+    rlim_t l = 1;
     rlim_t r = limit.rlim_max;
 #if defined(__i386__) || defined(__x86_64__)
     /* On x86(-64) size of rlim_t can be 64 bits, even though the address space
@@ -204,7 +238,7 @@ int main(int argc, char **argv)
     }
 #endif
     assert(r > l);
-    while (l < r) {
+    while (roundto(l, opt_unit) < roundto(r, opt_unit)) {
         rlim_t m = l + (r - l) / 2;
         off_t off = lseek(infd, 0, SEEK_SET);
         if (off == -1) {
@@ -248,7 +282,7 @@ int main(int argc, char **argv)
             }
         }
     }
-    printf("%ju\n", (uintmax_t) l);
+    printf("%ju\n", (uintmax_t) (roundto(l, opt_unit) / opt_unit));
     flush_stdout();
     return 0;
 }
