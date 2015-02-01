@@ -1,8 +1,8 @@
 ppvm (0.1.1) UNRELEASED; urgency=low
 
-  * 
+  * Fix a typo in the manual page.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 30 Jan 2015 14:28:59 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 01 Feb 2015 17:45:01 +0100
 
 ppvm (0.1) unstable; urgency=low
 
