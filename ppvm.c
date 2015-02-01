@@ -151,7 +151,12 @@ rlim_t roundto(rlim_t n, rlim_t unit)
 {
     assert(n > 0);
     assert(unit > 0);
-    return ((n - 1) | (unit - 1)) + 1;
+    rlim_t m = ((n - 1) | (unit - 1)) + 1;
+    if (m)
+        return m;
+    /* Ooops, an integer overflow happened.
+     * The result won't be accurate in that case, but oh well. */
+    return (rlim_t) -1;
 }
 
 int main(int argc, char **argv)
