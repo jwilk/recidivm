@@ -234,6 +234,15 @@ int main(int argc, char **argv)
     }
     rlim_t l = 1;
     rlim_t r = limit.rlim_max;
+    /* Whether or not a limit can be represented as rlim_t is
+     * implementation-defined. Hopefully using any number smaller than
+     * RLIM_INFINITY and RLIM_SAVED_MAX and RLIM_SAVED_CUR should be okay. */
+    if (r > RLIM_INFINITY)
+        r = RLIM_INFINITY;
+    if (r > RLIM_SAVED_MAX)
+        r = RLIM_SAVED_MAX;
+    if (r > RLIM_SAVED_CUR)
+        r = RLIM_SAVED_CUR;
 #if defined(__i386__) || defined(__x86_64__)
     /* On x86(-64) size of rlim_t can be 64 bits, even though the address space
      * is only 48 bits. */
