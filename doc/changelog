@@ -3,8 +3,9 @@ ppvm (0.1.1) UNRELEASED; urgency=low
   * Fix a typo in the manual page.
   * Fix integer overflow when rounding numbers up to the unit size.
   * Avoid trying to set limits that cannot be represented as rlim_t.
+  * Document that the target program must be deterministic.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sun, 01 Feb 2015 18:15:58 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 03 Feb 2015 21:47:22 +0100
 
 ppvm (0.1) unstable; urgency=low
 

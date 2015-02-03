@@ -19,6 +19,10 @@ The target program must be well-behaved:
 
 =item *
 
+It must be deterministic (at least with respect to memory use).
+
+=item *
+
 If the memory limit is sufficient, it must terminate with exit status 0.
 
 =item *
