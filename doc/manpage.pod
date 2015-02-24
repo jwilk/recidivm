@@ -6,7 +6,7 @@ recidivm - estimate peak virtual memory use
 
 =head1 SYNOPSIS
 
-B<recidivm> [B<-c>] [B<-p>] [B<-v>] [B<-u> B<B>|B<K>|B<M>] -- I<command> [I<argument>...]
+B<recidivm> [B<-c>] [B<-p>] [B<-v>] [B<-u> B<B>|B<K>|B<M>] B<--> I<command> [I<argument>...]
 
 =head1 DESCRIPTION
 
