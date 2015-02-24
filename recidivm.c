@@ -34,7 +34,7 @@
 
 void usage(bool explicit)
 {
-    fprintf(stderr, "Usage: ppvm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
+    fprintf(stderr, "Usage: recidivm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
     if (!explicit)
         exit(1);
     fprintf(stderr, "\n"
@@ -60,7 +60,7 @@ void flush_stdout(void)
     } else
         rc = fclose(stdout);
     if (rc == EOF) {
-        perror("ppvm: /dev/stdout");
+        perror("recidivm: /dev/stdout");
         exit(1);
     }
 }
@@ -68,7 +68,7 @@ void flush_stdout(void)
 void fatal_child(const char *func)
 {
     /* Something went very, very wrong. */
-    fprintf(stderr, "ppvm: %s: %s\n", func, strerror(errno));
+    fprintf(stderr, "recidivm: %s: %s\n", func, strerror(errno));
     kill(getppid(), SIGABRT);
     exit(1);
 }
@@ -94,13 +94,13 @@ int child(char **argv, rlim_t m, int infd, int outfd)
             fatal_child("dup2");
     }
     execvp(argv[0], argv);
-    perror("ppvm: execvp()");
+    perror("recidivm: execvp()");
     return 1;
 }
 
 int capture_stdin(void)
 {
-    const char *tmptemplate = "ppvm.XXXXXX";
+    const char *tmptemplate = "recidivm.XXXXXX";
     const char *tmpdir = getenv("TMPDIR");
     char *tmppath;
     if (tmpdir == NULL)
@@ -112,35 +112,35 @@ int capture_stdin(void)
         1 /* null byte */
     );
     if (tmppath == NULL) {
-        perror("ppvm: malloc()");
+        perror("recidivm: malloc()");
         exit(1);
     }
     sprintf(tmppath, "%s/%s", tmpdir, tmptemplate);
     int fd = mkstemp(tmppath);
     if (fd == -1) {
-        fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
         exit(1);
     }
     char buffer[BUFSIZ];
     ssize_t i;
     while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
         if (i == -1) {
-            perror("ppvm: /dev/stdin");
+            perror("recidivm: /dev/stdin");
             exit(1);
         }
         ssize_t j = write(fd, buffer, (size_t) i);
         if (j == -1) {
-            fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+            fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
             exit(1);
         } else if (i != j) {
             assert(j < i);
-            fprintf(stderr, "ppvm: %s: short write\n", tmppath);
+            fprintf(stderr, "recidivm: %s: short write\n", tmppath);
             exit(1);
         }
     }
     int rc = unlink(tmppath);
     if (rc == -1) {
-        fprintf(stderr, "ppvm: %s: %s\n", tmppath, strerror(errno));
+        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
         exit(1);
     }
     free(tmppath);
@@ -200,7 +200,7 @@ int main(int argc, char **argv)
                 case 'B':
                     break;
                 default:
-                    fprintf(stderr, "ppvm: unit must be B, K or M, not %s\n", optarg);
+                    fprintf(stderr, "recidivm: unit must be B, K or M, not %s\n", optarg);
                     return 1;
                 }
             }
@@ -218,7 +218,7 @@ int main(int argc, char **argv)
         usage(false);
     nullfd = open("/dev/null", O_RDWR);
     if (nullfd == -1) {
-        perror("ppvm: /dev/null");
+        perror("recidivm: /dev/null");
         return 1;
     }
     infd = opt_capture_stdin
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
     struct rlimit limit;
     rc = getrlimit(RLIMIT_AS, &limit);
     if (rc) {
-        perror("ppvm: getrlimit()");
+        perror("recidivm: getrlimit()");
         return 1;
     }
     rlim_t l = 1;
@@ -257,16 +257,16 @@ int main(int argc, char **argv)
         rlim_t m = l + (r - l) / 2;
         off_t off = lseek(infd, 0, SEEK_SET);
         if (off == -1) {
-            perror("ppvm: captured stdin");
+            perror("recidivm: captured stdin");
             return 1;
         }
         if (opt_verbose) {
-            fprintf(stderr, "ppvm: %ju -> ", (uintmax_t) m);
+            fprintf(stderr, "recidivm: %ju -> ", (uintmax_t) m);
             fflush(stderr);
         }
         switch (fork()) {
         case -1:
-            perror("ppvm: fork()");
+            perror("recidivm: fork()");
             return 1;
         case 0:
             /* child */
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
                 int status;
                 pid_t pid = wait(&status);
                 if (pid < 0) {
-                    perror("ppvm: wait()");
+                    perror("recidivm: wait()");
                     return 1;
                 }
                 if (opt_verbose) {

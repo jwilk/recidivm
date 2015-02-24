@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-ppvm - estimate peak virtual memory use
+recidivm - estimate peak virtual memory use
 
 =head1 SYNOPSIS
 
-B<ppvm> [B<-c>] [B<-p>] [B<-v>] [B<-u> B<B>|B<K>|B<M>] -- I<command> [I<argument>...]
+B<recidivm> [B<-c>] [B<-p>] [B<-v>] [B<-u> B<B>|B<K>|B<M>] -- I<command> [I<argument>...]
 
 =head1 DESCRIPTION
 
-B<ppvm> estimates the target program's peak virtual memory use
+B<recidivm> estimates the target program's peak virtual memory use
 by running it multiple times with different memory limits.
 
 The target program must be well-behaved:
@@ -76,13 +76,13 @@ Display help and exit.
     $ gcc -m64 hello.c -o hello64
     $ gcc -m32 -fsanitize=address hello.c -o hello32asan
     $ gcc -m64 -fsanitize=address hello.c -o hello64asan
-    $ ppvm -u M ./hello32
+    $ recidivm -u M ./hello32
     2
-    $ ppvm -u M ./hello64
+    $ recidivm -u M ./hello64
     4
-    $ ppvm -u M ./hello32asan
+    $ recidivm -u M ./hello32asan
     538
-    $ ppvm -u M ./hello64asan
+    $ recidivm -u M ./hello64asan
     20971587
 
 =head1 SEE ALSO

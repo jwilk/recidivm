@@ -1,5 +1,5 @@
 syntax: glob
 
 doc/*.1
-ppvm
+recidivm
 secret/

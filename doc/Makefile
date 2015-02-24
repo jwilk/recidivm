@@ -1,11 +1,11 @@
 version = $(shell head -n1 changelog | cut -d ' ' -f2 | tr -d '()')
 
 .PHONY: all
-all: ppvm.1
+all: recidivm.1
 
-ppvm.1: manpage.pod
+recidivm.1: manpage.pod
 	sed -e 's/L<\([a-z_-]\+\)(\([0-9]\+\))>/B<\1>(\2)/' $(<) \
-	| pod2man --utf8 -c '' -n PPVM -r 'ppvm $(version)' \
+	| pod2man --utf8 -c '' -n RECIDIVM -r 'recidivm $(version)' \
 	> $(@).tmp
 	mv $(@).tmp $(@)
 

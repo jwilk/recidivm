@@ -1,5 +1,5 @@
 #!/bin/sh
-name=ppvm
+name=recidivm
 url=https://bitbucket.org/jwilk/$name
 if [ $# -ne 1 ]
 then
