@@ -1,4 +1,4 @@
-recidivm (0.1.1) UNRELEASED; urgency=low
+recidivm (0.1.1) unstable; urgency=low
 
   * Rename the package.
   * Fix a typo in the manual page.
@@ -6,7 +6,7 @@ recidivm (0.1.1) UNRELEASED; urgency=low
   * Avoid trying to set limits that cannot be represented as rlim_t.
   * Document that the target program must be deterministic.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 24 Feb 2015 11:41:22 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 24 Feb 2015 11:57:45 +0100
 
 ppvm (0.1) unstable; urgency=low
 
