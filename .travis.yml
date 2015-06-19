@@ -1,7 +1,9 @@
 language: c
 compiler:
- - gcc
- - clang
+- gcc
+- clang
 script:
- - make
- - ./recidivm -v -- true
+- make
+- ./recidivm -v -- true
+
+# vim:ts=2 sts=2 sw=2 et
