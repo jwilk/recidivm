@@ -48,7 +48,7 @@ hg archive -r "$revision" "$sourceroot/$name-$version"
 cd "$sourceroot"/*
 make -C doc/
 rm -rf .hg*
-rm -f .travis*
+rm -f .travis.yml
 rm -f private/build-source-tarball
 find . -empty -delete
 cd ..
