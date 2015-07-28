@@ -46,13 +46,13 @@ export GZIP='-9 -n'
 hg archive -r "$revision" "$sourceroot/$name-$version"
 cd "$sourceroot"/*
 make -C doc/
-rm -rf .hg*
-rm -f .travis.yml
-rm -f private/build-source-tarball
+rm .hg*
+rm .travis.yml
+rm private/build-source-tarball
 find . -empty -delete
 cd ..
 tar -czf "$pwd/$name-$version.tar.gz" */
-rm -rf "$sourceroot"
+rm -r "$sourceroot"
 set +x
 cd "$pwd"
 ls -d "$name-$version.tar.gz"
