@@ -1,6 +1,7 @@
 CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -Wconversion
 CFLAGS += $(shell getconf LFS_CFLAGS)
+LDFLAGS += $(shell getconf LFS_LDFLAGS)
 
 .PHONY: all
 all: recidivm
