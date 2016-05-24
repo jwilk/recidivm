@@ -1,5 +1,3 @@
-syntax: glob
-
 doc/*.1
 recidivm
 secret/
