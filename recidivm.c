@@ -176,6 +176,7 @@ int main(int argc, char **argv)
         switch (opt) {
         case 'h':
             usage(true);
+            break;
         case 'c':
             opt_capture_stdin = true;
             break;
@@ -192,10 +193,10 @@ int main(int argc, char **argv)
                 {
                 case 'm':
                 case 'M':
-                    opt_unit *= 1024;
+                    opt_unit *= 1024; /* fall through */
                 case 'k':
                 case 'K':
-                    opt_unit *= 1024;
+                    opt_unit *= 1024; /* fall through */
                 case 'b':
                 case 'B':
                     break;
@@ -210,6 +211,7 @@ int main(int argc, char **argv)
             break;
         case '?':
             usage(false);
+            break;
         default:
             assert("unexpected getopt(3) return value" == NULL);
         }
