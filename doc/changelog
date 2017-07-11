@@ -1,8 +1,9 @@
 recidivm (0.1.2) UNRELEASED; urgency=low
 
   * Use LFS_LDFLAGS in addition to LFS_CFLAGS.
+  * Fix GCC 7 compiler warnings.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Thu, 10 Dec 2015 15:11:13 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 12 Jul 2017 00:49:08 +0200
 
 recidivm (0.1.1) unstable; urgency=low
 
