@@ -264,7 +264,12 @@ int main(int argc, char **argv)
     if (opt_unit > step)
         step = opt_unit;
     while (roundto(l, step) < roundto(r, step)) {
-        rlim_t m = l + (r - l) / 2;
+        rlim_t m;
+        if (sizeof (rlim_t) > 6 && l == 1 && (r >> 30 >> 16))
+            /* slightly above the typical limit for 64-bit ASan-ed programs */
+            m = (rlim_t)1 << 30 << 15;
+        else
+            m = l + (r - l) / 2;
         off_t off = lseek(infd, 0, SEEK_SET);
         if (off == -1) {
             perror("recidivm: captured stdin");
