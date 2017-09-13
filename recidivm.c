@@ -169,6 +169,12 @@ int main(int argc, char **argv)
     int nullfd = -1;
     int infd = -1;
     int outfd = -1;
+    long lstep = sysconf(_SC_PAGESIZE);
+    if (lstep < 0) {
+        perror("recidivm: sysconf(_SC_PAGESIZE)");
+        return 1;
+    }
+    rlim_t step = (rlim_t) lstep;
     while (1) {
         int opt = getopt(argc, argv, "hcpu:v");
         if (opt == -1)
@@ -255,7 +261,9 @@ int main(int argc, char **argv)
     }
 #endif
     assert(r > l);
-    while (roundto(l, opt_unit) < roundto(r, opt_unit)) {
+    if (opt_unit > step)
+        step = opt_unit;
+    while (roundto(l, step) < roundto(r, step)) {
         rlim_t m = l + (r - l) / 2;
         off_t off = lseek(infd, 0, SEEK_SET);
         if (off == -1) {
@@ -302,7 +310,7 @@ int main(int argc, char **argv)
             }
         }
     }
-    printf("%ju\n", (uintmax_t) (roundto(l, opt_unit) / opt_unit));
+    printf("%ju\n", (uintmax_t) (roundto(l, step) / opt_unit));
     flush_stdout();
     return 0;
 }
