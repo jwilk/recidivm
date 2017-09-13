@@ -1,9 +1,16 @@
 recidivm (0.1.2) UNRELEASED; urgency=low
 
-  * Use LFS_LDFLAGS in addition to LFS_CFLAGS.
+  * In the first step, set virtual memory limit to 32 TiB (slightly above the
+    typical usage for 64-bit ASan-ed programs).
+    On x86, this should reduce the number of execs by 2 for virtually all
+    target programs.
+  * Round virtual memory limit to (at least) page size.
+    On x86, this could reduce the number of execs by 12 (for “-u B”)
+    or by 2 (for “-u K”).
+  * Use LFS_LDFLAGS and LFS_LIBS in addition to LFS_CFLAGS.
   * Fix GCC 7 compiler warnings.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 12 Jul 2017 00:49:08 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Sep 2017 11:18:10 +0200
 
 recidivm (0.1.1) unstable; urgency=low
 
