@@ -7,10 +7,12 @@ recidivm (0.1.2) UNRELEASED; urgency=low
   * Round virtual memory limit to (at least) page size.
     On x86, this could reduce the number of execs by 12 (for “-u B”)
     or by 2 (for “-u K”).
+  * Put license into a separate file.
+    https://github.com/jwilk/recidivm/issues/1
   * Use LFS_LDFLAGS and LFS_LIBS in addition to LFS_CFLAGS.
   * Fix GCC 7 compiler warnings.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Sep 2017 11:18:10 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 24 Sep 2017 10:59:54 +0200
 
 recidivm (0.1.1) unstable; urgency=low
 
