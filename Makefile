@@ -18,6 +18,10 @@ else
 	install -m644 doc/recidivm.1 $(DESTDIR)$(PREFIX)/share/man/man1/recidivm.1
 endif
 
+.PHONY: test
+test: recidivm
+	./recidivm -v -- true
+
 .PHONY: clean
 clean:
 	rm -f recidivm
