@@ -3,8 +3,9 @@ recidivm (0.1.3) UNRELEASED; urgency=low
   * Improve the build system:
     + Add install target.
     + Add test target.
+    + Don't use getconf(1) to acquire LFS build flags.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sun, 24 Sep 2017 23:26:52 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 08 Nov 2017 18:31:57 +0100
 
 recidivm (0.1.2) unstable; urgency=low
 
