@@ -32,6 +32,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#ifndef RLIMIT_AS
+#define RLIMIT_AS RLIMIT_DATA
+#endif
+
 void usage(bool explicit)
 {
     fprintf(stderr, "Usage: recidivm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
