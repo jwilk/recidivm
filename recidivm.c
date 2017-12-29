@@ -180,7 +180,7 @@ int main(int argc, char **argv)
     }
     rlim_t step = (rlim_t) lstep;
     while (1) {
-        int opt = getopt(argc, argv, "hcpu:v");
+        int opt = getopt(argc, argv, "+hcpu:v");
         if (opt == -1)
             break;
         switch (opt) {
