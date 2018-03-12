@@ -1,9 +1,9 @@
-recidivm (0.1.4) UNRELEASED; urgency=low
+recidivm (0.1.4) unstable; urgency=low
 
   * Fix build failure on OpenBSD.
   * Don't allow mixing options with positional arguments.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Thu, 11 Jan 2018 14:50:01 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 12 Mar 2018 17:07:46 +0100
 
 recidivm (0.1.3) unstable; urgency=low
 
