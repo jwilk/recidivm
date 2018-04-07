@@ -9,7 +9,7 @@ all: recidivm
 install: recidivm
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m755 $(<) $(DESTDIR)$(PREFIX)/bin/$(<)
-ifeq "$(wildcard .git doc/recidivm.1)" ".git"
+ifeq "$(wildcard doc/recidivm.1)" ""
 	# run "$(MAKE) -C doc" to build the manpage
 else
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1
