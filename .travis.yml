@@ -14,6 +14,7 @@ script:
 - make
 - make test
 - make -C doc
+- make -C doc check
 - make install PREFIX=~/.local
 - cd /
 - recidivm -h
