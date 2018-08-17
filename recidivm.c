@@ -36,7 +36,7 @@
 #define RLIMIT_AS RLIMIT_DATA
 #endif
 
-void usage(bool explicit)
+static void usage(bool explicit)
 {
     fprintf(stderr, "Usage: recidivm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
     if (!explicit)
@@ -54,7 +54,7 @@ void usage(bool explicit)
     exit(0);
 }
 
-void flush_stdout(void)
+static void flush_stdout(void)
 {
     int rc;
     if (ferror(stdout)) {
@@ -69,7 +69,7 @@ void flush_stdout(void)
     }
 }
 
-void fatal_child(const char *func)
+static void fatal_child(const char *func)
 {
     /* Something went very, very wrong. */
     fprintf(stderr, "recidivm: %s: %s\n", func, strerror(errno));
@@ -77,7 +77,7 @@ void fatal_child(const char *func)
     exit(1);
 }
 
-int child(char **argv, rlim_t m, int infd, int outfd)
+static int child(char **argv, rlim_t m, int infd, int outfd)
 {
     struct rlimit limit = {m, m};
     int rc = setrlimit(RLIMIT_AS, &limit);
@@ -102,7 +102,7 @@ int child(char **argv, rlim_t m, int infd, int outfd)
     return 1;
 }
 
-int capture_stdin(void)
+static int capture_stdin(void)
 {
     const char *tmptemplate = "recidivm.XXXXXX";
     const char *tmpdir = getenv("TMPDIR");
@@ -151,7 +151,7 @@ int capture_stdin(void)
     return fd;
 }
 
-rlim_t roundto(rlim_t n, rlim_t unit)
+static rlim_t roundto(rlim_t n, rlim_t unit)
 {
     assert(n > 0);
     assert(unit > 0);
