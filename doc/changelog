@@ -1,3 +1,9 @@
+recidivm (0.1.5) UNRELEASED; urgency=low
+
+  * Print the help message (-h) on stdout, not stderr.
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 17 Aug 2018 17:46:19 +0200
+
 recidivm (0.1.4) unstable; urgency=low
 
   * Fix build failure on OpenBSD.
