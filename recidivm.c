@@ -36,12 +36,12 @@
 #define RLIMIT_AS RLIMIT_DATA
 #endif
 
-static void usage(bool explicit)
+static void usage(FILE *fp)
 {
-    fprintf(stderr, "Usage: recidivm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
-    if (!explicit)
+    fprintf(fp, "Usage: recidivm [-cpv] [-u B|K|M] -- <command> [argument...]\n");
+    if (fp == stderr)
         exit(1);
-    fprintf(stderr, "\n"
+    fprintf(fp, "\n"
         "Options:\n"
         "  -c    capture stdin\n"
         "  -p    don't redirect stdout and stderr\n"
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
             break;
         switch (opt) {
         case 'h':
-            usage(true);
+            usage(stdout);
             break;
         case 'c':
             opt_capture_stdin = true;
@@ -220,14 +220,14 @@ int main(int argc, char **argv)
             opt_verbose = true;
             break;
         case '?':
-            usage(false);
+            usage(stderr);
             break;
         default:
             assert("unexpected getopt(3) return value" == NULL);
         }
     }
     if (optind >= argc)
-        usage(false);
+        usage(stderr);
     nullfd = open("/dev/null", O_RDWR);
     if (nullfd == -1) {
         perror("recidivm: /dev/null");
