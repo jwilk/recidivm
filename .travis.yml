@@ -10,7 +10,9 @@ addons:
     - cppcheck
 script:
 - dpkg-parsechangelog -ldoc/changelog --all 2>&1 >/dev/null | { ! grep .; }
+- perl -pi -e 's/^#ifdef SIGPOLL$/#if 1/' *.c  # "ifdef SIGPOLL" confuses cppcheck
 - cppcheck --error-exitcode=1 *.c
+- git checkout *.c
 - make
 - make test
 - make -C doc
