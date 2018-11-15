@@ -163,6 +163,49 @@ static rlim_t roundto(rlim_t n, rlim_t unit)
     return (rlim_t) -1;
 }
 
+static const char * get_signal_name(int sig)
+{
+    switch (sig) {
+#define s(n) case n: return "" # n "";
+    /* POSIX.1-1990: */
+    s(SIGHUP);
+    s(SIGINT);
+    s(SIGQUIT);
+    s(SIGILL);
+    s(SIGABRT);
+    s(SIGFPE);
+    s(SIGKILL);
+    s(SIGSEGV);
+    s(SIGPIPE);
+    s(SIGALRM);
+    s(SIGTERM);
+    s(SIGUSR1);
+    s(SIGUSR2);
+    s(SIGCHLD);
+    s(SIGCONT);
+    s(SIGSTOP);
+    s(SIGTSTP);
+    s(SIGTTIN);
+    s(SIGTTOU);
+    /* SUSv2 and POSIX.1-2001: */
+    s(SIGBUS);
+#ifdef SIGPOLL
+    /* not supported on OpenBSD */
+    s(SIGPOLL);
+#endif
+    s(SIGPROF);
+    s(SIGSYS);
+    s(SIGTRAP);
+    s(SIGURG);
+    s(SIGVTALRM);
+    s(SIGXCPU);
+    s(SIGXFSZ);
+#undef s
+    default:
+        return NULL;
+    }
+}
+
 int main(int argc, char **argv)
 {
     int rc;
@@ -306,7 +349,11 @@ int main(int argc, char **argv)
                         fprintf(stderr, "exit status %d", WEXITSTATUS(status));
                     else if (WIFSIGNALED(status)) {
                         int termsig = WTERMSIG(status);
-                        fprintf(stderr, "signal %d (%s)", termsig, strsignal(termsig));
+                        const char *signame = get_signal_name(termsig);
+                        if (signame)
+                            fprintf(stderr, "%s", signame);
+                        else
+                            fprintf(stderr, "signal %d (%s)", termsig, strsignal(termsig));
                     } else
                         assert("unexpected wait(2) status" == NULL);
                     fprintf(stderr, "\n");
