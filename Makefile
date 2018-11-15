@@ -28,12 +28,12 @@ all: recidivm
 .PHONY: install
 install: recidivm
 	install -d $(DESTDIR)$(PREFIX)/bin
-	install -m755 $(<) $(DESTDIR)$(PREFIX)/bin/$(<)
+	install -m755 $(<) $(DESTDIR)$(PREFIX)/bin/
 ifeq "$(wildcard doc/recidivm.1)" ""
 	# run "$(MAKE) -C doc" to build the manpage
 else
 	install -d $(DESTDIR)$(PREFIX)/share/man/man1
-	install -m644 doc/recidivm.1 $(DESTDIR)$(PREFIX)/share/man/man1/recidivm.1
+	install -m644 doc/$(<).1 $(DESTDIR)$(PREFIX)/share/man/man1/
 endif
 
 .PHONY: test
