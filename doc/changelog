@@ -1,8 +1,10 @@
 recidivm (0.1.5) UNRELEASED; urgency=low
 
   * Print the help message (-h) on stdout, not stderr.
+  * Print signal names (e.g. “SIGABRT”) instead of numbers with descriptions
+    (e.g. “signal 6 (Aborted)”).
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 17 Aug 2018 17:46:19 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 15 Nov 2018 20:01:37 +0100
 
 recidivm (0.1.4) unstable; urgency=low
 
