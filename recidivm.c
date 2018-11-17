@@ -166,7 +166,7 @@ static rlim_t roundto(rlim_t n, rlim_t unit)
 static const char * get_signal_name(int sig)
 {
     switch (sig) {
-#define s(n) case n: return "" # n "";
+#define s(n) case n: return #n;
     /* POSIX.1-1990: */
     s(SIGHUP);
     s(SIGINT);
