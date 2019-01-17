@@ -49,7 +49,7 @@ static void usage(FILE *fp)
         "  -u K  use kilobyte as unit\n"
         "  -u M  use megabyte as unit\n"
         "  -v    be verbose\n"
-        "  -h    display this help and exit\n"
+        "  -h    show this help message and exit\n"
     );
     exit(0);
 }
