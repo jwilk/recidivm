@@ -22,6 +22,9 @@ CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -Wconversion
 CFLAGS += -D_FILE_OFFSET_BITS=64
 
+PREFIX = /usr/local
+DESTDIR =
+
 .PHONY: all
 all: recidivm
 
