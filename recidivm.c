@@ -310,6 +310,7 @@ int main(int argc, char **argv)
     assert(r > l);
     if (opt_unit > step)
         step = opt_unit;
+    bool ok = false;
     while (roundto(l, step) < roundto(r, step)) {
         rlim_t m;
         if (sizeof (rlim_t) > 6 && l == 1 && (r >> 30 >> 16))
@@ -358,13 +359,18 @@ int main(int argc, char **argv)
                         assert("unexpected wait(2) status" == NULL);
                     fprintf(stderr, "\n");
                 }
-                if (status == 0)
+                if (status == 0) {
                     r = m;
-                else
+                    ok = true;
+                } else
                     l = m + 1;
                 break;
             }
         }
+    }
+    if (!ok) {
+        fprintf(stderr, "recidivm: target program fails regardless of memory limit\n");
+        return 1;
     }
     printf("%ju\n", (uintmax_t) (roundto(l, step) / opt_unit));
     flush_stdout();
