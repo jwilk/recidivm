@@ -25,18 +25,21 @@ CFLAGS += -D_FILE_OFFSET_BITS=64
 PREFIX = /usr/local
 DESTDIR =
 
+bindir = $(PREFIX)/bin
+mandir = $(PREFIX)/share/man
+
 .PHONY: all
 all: recidivm
 
 .PHONY: install
 install: recidivm
-	install -d $(DESTDIR)$(PREFIX)/bin
-	install -m755 $(<) $(DESTDIR)$(PREFIX)/bin/
+	install -d $(DESTDIR)$(bindir)
+	install -m755 $(<) $(DESTDIR)$(bindir)/
 ifeq "$(wildcard doc/recidivm.1)" ""
 	# run "$(MAKE) -C doc" to build the manpage
 else
-	install -d $(DESTDIR)$(PREFIX)/share/man/man1
-	install -m644 doc/$(<).1 $(DESTDIR)$(PREFIX)/share/man/man1/
+	install -d $(DESTDIR)$(mandir)/man1
+	install -m644 doc/$(<).1 $(DESTDIR)$(mandir)/man1/
 endif
 
 .PHONY: test
@@ -46,7 +49,7 @@ test: recidivm
 	$(prog) -v -- true
 
 .PHONY: test-installed
-test-installed: $(or $(shell command -v recidivm;),$(PREFIX)/bin/recidivm)
+test-installed: $(or $(shell command -v recidivm;),$(bindir)/recidivm)
 	$(MAKE) test prog=recidivm
 
 .PHONY: clean
