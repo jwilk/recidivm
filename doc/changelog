@@ -4,9 +4,12 @@ recidivm (0.2) UNRELEASED; urgency=low
   * Print the help message (-h) on stdout, not stderr.
   * Print signal names (e.g. “SIGABRT”) instead of numbers with descriptions
     (e.g. “signal 6 (Aborted)”).
+  * Improve the build system:
+    + Set default PREFIX and DESTDIR.
+    + Add test-installed target.
   * Improve documentation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sat, 16 Feb 2019 16:33:53 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 16 Feb 2019 23:01:27 +0100
 
 recidivm (0.1.4) unstable; urgency=low
 
