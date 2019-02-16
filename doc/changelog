@@ -1,4 +1,4 @@
-recidivm (0.1.5) UNRELEASED; urgency=low
+recidivm (0.2) UNRELEASED; urgency=low
 
   * Print the help message (-h) on stdout, not stderr.
   * Print signal names (e.g. “SIGABRT”) instead of numbers with descriptions
