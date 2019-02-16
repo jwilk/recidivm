@@ -40,9 +40,14 @@ else
 endif
 
 .PHONY: test
+test: prog=./recidivm
 test: recidivm
-	./recidivm -- false; [ $$? -eq 1 ]
-	./recidivm -v -- true
+	$(prog) -- false; [ $$? -eq 1 ]
+	$(prog) -v -- true
+
+.PHONY: test-installed
+test-installed: $(or $(shell command -v recidivm;),$(PREFIX)/bin/recidivm)
+	$(MAKE) test prog=recidivm
 
 .PHONY: clean
 clean:
