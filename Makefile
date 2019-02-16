@@ -38,6 +38,7 @@ endif
 
 .PHONY: test
 test: recidivm
+	./recidivm -- false; [ $$? -eq 1 ]
 	./recidivm -v -- true
 
 .PHONY: clean
