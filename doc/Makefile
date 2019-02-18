@@ -30,8 +30,15 @@ recidivm.1: manpage.pod
 	mv $(@).tmp $(@)
 
 .PHONY: check
-check: manpage.pod
+check: check-pod check-changelog
+
+.PHONY: check-pod
+check-pod: manpage.pod
 	podchecker -warnings -warnings $(<)
+
+.PHONY: check-changelog
+check-changelog: changelog
+	dpkg-parsechangelog -l$(<) --all 2>&1 >/dev/null | { ! grep .; }
 
 .PHONY: clean
 clean:
