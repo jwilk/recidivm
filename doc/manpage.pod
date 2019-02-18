@@ -39,7 +39,9 @@ If the memory limit is insufficient, it must terminate with non-zero exit status
 
 Capture stdin and provide fresh copy of it to every instance of the target program.
 
-The default is to redirect stdin to F</dev/null>.
+This is the default when stdin is not a terminal.
+
+If stdin is a terminal, the default is to redirect the target program's stdin to F</dev/null>.
 
 =item B<-p>
 
