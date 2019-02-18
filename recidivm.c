@@ -130,6 +130,16 @@ static int capture_stdin(void)
         fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
         exit(1);
     }
+    int flags = fcntl(fd, F_GETFD);
+    if (flags == -1) {
+        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
+        exit(1);
+    }
+    rc = fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
+    if (rc == -1) {
+        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
+        exit(1);
+    }
     char buffer[BUFSIZ];
     ssize_t i;
     while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
@@ -271,7 +281,7 @@ int main(int argc, char **argv)
     }
     if (optind >= argc)
         usage(stderr);
-    nullfd = open("/dev/null", O_RDWR);
+    nullfd = open("/dev/null", O_RDWR | O_CLOEXEC);
     if (nullfd == -1) {
         perror("recidivm: /dev/null");
         return 1;
