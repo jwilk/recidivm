@@ -125,6 +125,11 @@ static int capture_stdin(void)
         fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
         exit(1);
     }
+    int rc = unlink(tmppath);
+    if (rc == -1) {
+        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
+        exit(1);
+    }
     char buffer[BUFSIZ];
     ssize_t i;
     while ((i = read(STDIN_FILENO, buffer, sizeof buffer))) {
@@ -141,11 +146,6 @@ static int capture_stdin(void)
             fprintf(stderr, "recidivm: %s: short write\n", tmppath);
             exit(1);
         }
-    }
-    int rc = unlink(tmppath);
-    if (rc == -1) {
-        fprintf(stderr, "recidivm: %s: %s\n", tmppath, strerror(errno));
-        exit(1);
     }
     free(tmppath);
     return fd;
