@@ -43,7 +43,7 @@ static void usage(FILE *fp)
         exit(1);
     fprintf(fp, "\n"
         "Options:\n"
-        "  -c    capture stdin (default except for tty)\n"
+        "  -c    capture stdin (default unless stdin is tty)\n"
         "  -p    don't redirect stdout and stderr\n"
         "  -u B  use byte as unit (default)\n"
         "  -u K  use kilobyte as unit\n"
