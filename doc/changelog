@@ -1,4 +1,4 @@
-recidivm (0.2) UNRELEASED; urgency=low
+recidivm (0.2) unstable; urgency=low
 
   * Capture stdin by default when stdio is not a tty.
     (This should make the -c option redundant for most practical purposes.)
@@ -15,7 +15,7 @@ recidivm (0.2) UNRELEASED; urgency=low
       (Only GNU make is supported.)
   * Improve documentation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 19 Feb 2019 19:25:09 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 19 Feb 2019 19:27:45 +0100
 
 recidivm (0.1.4) unstable; urgency=low
 
