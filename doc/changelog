@@ -10,10 +10,12 @@ recidivm (0.2) UNRELEASED; urgency=low
   * Unlink the temporary file as early as possible.
   * Improve the build system:
     + Set default PREFIX and DESTDIR.
-    + Add test-installed target.
+    + Add “test-installed” target.
+    + Add checks against BSD make.
+      (Only GNU make is supported.)
   * Improve documentation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 18 Feb 2019 10:01:40 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 19 Feb 2019 19:25:09 +0100
 
 recidivm (0.1.4) unstable; urgency=low
 
