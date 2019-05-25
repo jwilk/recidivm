@@ -8,7 +8,6 @@ addons:
     packages:
     - cppcheck
 script:
-- perl -pi -e 's/^#ifdef SIGPOLL$/#if 1/' *.c  # "ifdef SIGPOLL" confuses cppcheck
 - cppcheck --error-exitcode=1 *.c
 - git checkout *.c
 - make
