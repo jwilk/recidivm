@@ -16,6 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: run cppcheck
+      if: matrix.cc == 'gcc'
       run: |
         sudo apt-get install cppcheck
         cppcheck --error-exitcode=1 *.c
