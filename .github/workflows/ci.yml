@@ -18,6 +18,8 @@ jobs:
     - name: run cppcheck
       if: matrix.cc == 'gcc'
       run: |
+        printf 'Apt::Install-Recommends "false";\n' | sudo tee -a /etc/apt/apt.conf
+        sudo apt-get update
         sudo apt-get install cppcheck
         cppcheck --error-exitcode=1 *.c
     - name: check C compiler version
