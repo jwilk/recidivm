@@ -1,3 +1,9 @@
+recidivm (0.2.1) UNRELEASED; urgency=low
+
+  * 
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 26 Feb 2022 16:46:17 +0100
+
 recidivm (0.2) unstable; urgency=low
 
   * Capture stdin by default when stdio is not a tty.
