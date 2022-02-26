@@ -48,8 +48,7 @@ gzip='gzip -9 -n'
 git archive "$commit" --prefix="$name-$version/" | tar -C "$sourceroot" -xf -
 cd "$sourceroot"/*
 make -C doc/
-rm .git*
-rm .travis.yml
+rm -r .git*
 rm private/build-source-tarball
 mv LICENSE doc/
 find . -empty -delete
