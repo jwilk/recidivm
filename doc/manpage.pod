@@ -66,7 +66,7 @@ Use megabyte (1048576 bytes) as the size unit.
 
 Print information about every call to the target program.
 
-=item B<-h>
+=item B<-h>, B<--help>
 
 Show help message and exit.
 

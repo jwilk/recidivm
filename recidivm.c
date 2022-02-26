@@ -233,7 +233,7 @@ int main(int argc, char **argv)
     }
     rlim_t step = (rlim_t) lstep;
     while (1) {
-        int opt = getopt(argc, argv, "+hcpu:v");
+        int opt = getopt(argc, argv, "+h-:cpu:v");
         if (opt == -1)
             break;
         switch (opt) {
@@ -272,6 +272,10 @@ int main(int argc, char **argv)
         case 'v':
             opt_verbose = true;
             break;
+        case '-':
+            if (strcmp(optarg, "help") == 0)
+                usage(stdout);
+            /* fall through */
         case '?':
             usage(stderr);
             break;
