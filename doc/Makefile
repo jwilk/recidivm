@@ -23,7 +23,7 @@ version = $(shell IFS='()' read _ v _ < changelog && echo $$v)
 .PHONY: all
 all: recidivm.1
 
-recidivm.1: manpage.pod
+recidivm.1: manpage.pod changelog
 	perl -p -e 's/L<([a-z_-]+)[(]([0-9]+)[)]>/B<\1>(\2)/g' $(<) \
 	| pod2man --utf8 -c '' -n RECIDIVM -r 'recidivm $(version)' \
 	> $(@).tmp
