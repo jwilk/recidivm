@@ -14,7 +14,7 @@ jobs:
         - clang
     runs-on: ${{matrix.os}}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: run cppcheck
       if: matrix.cc == 'gcc'
       run: |
