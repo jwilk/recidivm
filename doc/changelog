@@ -1,9 +1,9 @@
-recidivm (0.2.1) UNRELEASED; urgency=low
+recidivm (0.2.1) unstable; urgency=low
 
   * Add --help as an alias for -h.
   * Refurbish the test suite.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 13 Feb 2023 13:33:37 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 01 Feb 2024 11:56:11 +0100
 
 recidivm (0.2) unstable; urgency=low
 
